@@ -1,0 +1,173 @@
+/* ── 1. Remote @imports MUST come first ─────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Red+Hat+Text:wght@400;500;600;700&display=swap');
+
+/* ── 2. Tailwind + local imports ────────────────────────────────── */
+@import 'tailwindcss';
+@import "../../node_modules/preline/variants.css";
+
+/* ── 3. Tailwind source scanning ────────────────────────────────── */
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source "../../node_modules/preline/dist/*.js";
+
+/* ── 4. Custom variants ─────────────────────────────────────────── */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant hover (&:hover);
+
+/* ── 5. Tailwind theme — registers utilities like bg-primary-500 ── */
+@theme {
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+    /* Primary */
+    --color-primary: var(--primary);
+    --color-primary-50: var(--primary-50);
+    --color-primary-100: var(--primary-100);
+    --color-primary-200: var(--primary-200);
+    --color-primary-300: var(--primary-300);
+    --color-primary-400: var(--primary-400);
+    --color-primary-500: var(--primary-500);
+    --color-primary-600: var(--primary-600);
+    --color-primary-700: var(--primary-700);
+    --color-primary-800: var(--primary-800);
+    --color-primary-900: var(--primary-900);
+
+    /* Gray */
+    --color-gray: var(--gray);
+    --color-gray-50: var(--gray-50);
+    --color-gray-100: var(--gray-100);
+    --color-gray-200: var(--gray-200);
+    --color-gray-300: var(--gray-300);
+    --color-gray-400: var(--gray-400);
+    --color-gray-500: var(--gray-500);
+    --color-gray-600: var(--gray-600);
+    --color-gray-700: var(--gray-700);
+    --color-gray-800: var(--gray-800);
+    --color-gray-900: var(--gray-900);
+
+    /* Semantic tokens */
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-border: var(--border);
+    --color-input: var(--gray-200);
+    --color-ring: var(--ring);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+
+    /* Border radius */
+    --radius: var(--radius-base);
+}
+
+/* ── 6. CSS variable values (light mode) ────────────────────────── */
+:root {
+    --radius-base: 0.5rem;
+
+    --primary: #d03bf5;
+    --primary-50: #ffc3ff;
+    --primary-100: #ffa8ff;
+    --primary-200: #ff8eff;
+    --primary-300: #ff73ff;
+    --primary-400: #eb58ff;
+    --primary-500: #d03bf5;
+    --primary-600: #b513db;
+    --primary-700: #9b00c1;
+    --primary-800: #8000a8;
+    --primary-900: #660090;
+
+    --gray: #837a85;
+    --gray-50: #fafafa;
+    --gray-100: #f3f2f3;
+    --gray-200: #e6e4e7;
+    --gray-300: #cdcace;
+    --gray-400: #b5afb6;
+    --gray-500: #837a85;
+    --gray-600: #69616b;
+    --gray-700: #4f4950;
+    --gray-800: #343135;
+    --gray-900: #1a181b;
+
+    --border: #e6e4e7;
+    --input: #e6e4e7;
+    --ring: #ff8eff;
+    --background: #ffffff;
+    --foreground: #1a181b;
+    --muted: #f3f2f3;
+    --muted-foreground: #837a85;
+    --accent: #f3f2f3;
+    --accent-foreground: #660090;
+    --destructive: #ff0000;
+    --destructive-foreground: #ffffff;
+    --card: #ffffff;
+    --card-foreground: #1a181b;
+    --popover: #ffffff;
+    --popover-foreground: #1a181b;
+}
+
+/* ── 7. CSS variable values (dark mode) ─────────────────────────── */
+[data-theme="dark"] {
+    --primary: #eb58ff;
+    --primary-50: #660090;
+    --primary-100: #8000a8;
+    --primary-200: #9b00c1;
+    --primary-300: #b513db;
+    --primary-400: #d03bf5;
+    --primary-500: #eb58ff;
+    --primary-600: #ff73ff;
+    --primary-700: #ff8eff;
+    --primary-800: #ffa8ff;
+    --primary-900: #ffc3ff;
+
+    --gray: #b5afb6;
+    --gray-50: #1a181b;
+    --gray-100: #343135;
+    --gray-200: #4f4950;
+    --gray-300: #69616b;
+    --gray-400: #837a85;
+    --gray-500: #b5afb6;
+    --gray-600: #cdcace;
+    --gray-700: #e6e4e7;
+    --gray-800: #f3f2f3;
+    --gray-900: #fafafa;
+
+    --border: #4f4950;
+    --input: #4f4950;
+    --ring: #ffa8ff;
+    --background: #1a181b;
+    --foreground: #f3f2f3;
+    --muted: #343135;
+    --muted-foreground: #b5afb6;
+    --accent: #343135;
+    --accent-foreground: #ffa8ff;
+    --destructive: #ff0000;
+    --destructive-foreground: #ffffff;
+    --card: #343135;
+    --card-foreground: #f3f2f3;
+    --popover: #343135;
+    --popover-foreground: #f3f2f3;
+}
+
+/* ── 8. Base styles ─────────────────────────────────────────────── */
+body {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    /* background-color: var(--background); */
+    color: var(--foreground);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@layer base {
+
+    button:not(:disabled),
+    [role="button"]:not(:disabled) {
+        cursor: pointer;
+    }
+}
