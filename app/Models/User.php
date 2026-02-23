@@ -79,4 +79,16 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserLogins::class);
     }
+
+    public function hasVerifiedPhone(): bool
+    {
+        return !is_null($this->phone_verified_at);
+    }
+
+    public function markPhoneAsVerified(): bool
+    {
+        return $this->forceFill([
+            'phone_verified_at' => $this->freshTimestamp(),
+        ])->save();
+    }
 }

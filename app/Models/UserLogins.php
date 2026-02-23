@@ -9,10 +9,9 @@ class UserLogins extends Model
     protected $fillable = [
         'user_id',
         'ip_address',
-        'user_agent',
-        'login_time',
-        'logout_time',
-        'status',
+        'country',
+        'device',
+        'logged_in_at',
     ];
 
 

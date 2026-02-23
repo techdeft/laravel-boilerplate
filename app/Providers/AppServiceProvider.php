@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Auth\Events\Registered;
+use App\Listeners\SendWelcomeEmail;
+use App\Contracts\SmsProviderInterface;
+use App\Services\Providers\TermiiService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(SmsProviderInterface::class, TermiiService::class);
     }
 
     /**
@@ -31,6 +36,11 @@ class AppServiceProvider extends ServiceProvider
         Blade::component('layouts.guest.footer', 'guest-footer');
         Blade::component('layouts.auth.app', 'auth-layout');
         Blade::component('layouts.app.app', 'app-layout');
+
+        Event::listen(
+            Registered::class,
+            SendWelcomeEmail::class,
+        );
     }
 
     /**

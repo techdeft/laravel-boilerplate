@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'termii' => [
+        'base_url' => env('TERMII_BASE_URL'),
+        'api_key' => env('TERMII_API_KEY'),
+    ],
+
 ];
