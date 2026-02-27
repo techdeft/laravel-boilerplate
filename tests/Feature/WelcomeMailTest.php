@@ -37,7 +37,7 @@ class WelcomeMailTest extends TestCase
 
         $mailable = new WelcomeMail($user);
 
-        $mailable->assertSeeInHtml('Hi John Doe');
+        $mailable->assertSeeInHtml('Hello John Doe');
         $mailable->assertSeeInHtml(config('app.name'));
         $mailable->assertHasSubject('Welcome to ' . config('app.name') . '!');
     }

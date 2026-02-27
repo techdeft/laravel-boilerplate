@@ -1,0 +1,91 @@
+﻿PHPUnit 11.5.55 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.3.6
+Configuration: C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\phpunit.xml
+
+EE                                                                  2 / 2 (100%)
+
+Time: 00:01.716, Memory: 44.00 MB
+
+There were 2 errors:
+
+1) Tests\Feature\EmailServiceTest::test_it_logs_email_and_dispatches_job
+Illuminate\Database\QueryException: SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: users.uuid (Connection: sqlite, Database: :memory:, SQL: insert into "users" ("name", "email", "email_verified_at", "password", "remember_token", "two_factor_secret", "two_factor_recovery_codes", "two_factor_confirmed_at", "updated_at", "created_at") values (Maximillian Ritchie III, lcummings@example.net, 2026-02-26 18:39:20, $2y$04$u.L9COJu/0jGse14TRC5nOrYwy9R6lnkR4nkt/jAMZloX5.IE1PnS, Ev9fJ1vP4i, ?, ?, ?, 2026-02-26 18:39:20, 2026-02-26 18:39:20))
+
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:838
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:794
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:573
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:537
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:4103
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:275
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\tests\Feature\EmailServiceTest.php:30
+
+Caused by
+PDOException: SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: users.uuid
+
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:584
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:827
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:794
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:573
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:537
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:4103
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:275
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\tests\Feature\EmailServiceTest.php:30
+
+2) Tests\Feature\EmailServiceTest::test_send_email_job_sends_email_and_updates_log
+Illuminate\Database\QueryException: SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: users.uuid (Connection: sqlite, Database: :memory:, SQL: insert into "users" ("name", "email", "email_verified_at", "password", "remember_token", "two_factor_secret", "two_factor_recovery_codes", "two_factor_confirmed_at", "updated_at", "created_at") values (Allen Hegmann, apurdy@example.net, 2026-02-26 18:39:20, $2y$04$u.L9COJu/0jGse14TRC5nOrYwy9R6lnkR4nkt/jAMZloX5.IE1PnS, BXqjKMTnRQ, ?, ?, ?, 2026-02-26 18:39:20, 2026-02-26 18:39:20))
+
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:838
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:794
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:573
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:537
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:4103
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:275
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\tests\Feature\EmailServiceTest.php:49
+
+Caused by
+PDOException: SQLSTATE[23000]: Integrity constraint violation: 19 NOT NULL constraint failed: users.uuid
+
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:584
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:827
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:794
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:573
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Connection.php:537
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Query\Processors\Processor.php:32
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Query\Builder.php:4103
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Builder.php:2235
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1436
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1401
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Model.php:1240
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:370
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Collections\Traits\EnumeratesValues.php:275
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:365
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\vendor\laravel\framework\src\Illuminate\Database\Eloquent\Factories\Factory.php:321
+C:\Users\Bankola\Desktop\git_projects\laravel-boilerplate\laravel-bollerplate\tests\Feature\EmailServiceTest.php:49
+
+ERRORS!
+Tests: 2, Assertions: 0, Errors: 2.

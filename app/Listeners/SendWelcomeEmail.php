@@ -15,7 +15,7 @@ class SendWelcomeEmail implements ShouldQueue
     /**
      * Create the event listener.
      */
-    public function __construct()
+    public function __construct(protected \App\Services\Email\EmailService $emailService)
     {
         //
     }
@@ -28,7 +28,7 @@ class SendWelcomeEmail implements ShouldQueue
         $user = $event->user;
 
         if ($user instanceof \App\Models\User) {
-            Mail::to($user->email)->send(new WelcomeMail($user));
+            $this->emailService->send($user->email, new WelcomeMail($user), 'Welcome Email');
         }
     }
 }

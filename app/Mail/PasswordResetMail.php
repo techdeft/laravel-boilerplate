@@ -6,14 +6,15 @@ use App\Models\User;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 
-class WelcomeMail extends BaseMailable
+class PasswordResetMail extends BaseMailable
 {
     /**
      * Create a new message instance.
      */
-    public function __construct(public User $user)
-    {
-        //
+    public function __construct(
+        public User $user,
+        public string $resetUrl
+    ) {
     }
 
     /**
@@ -22,7 +23,7 @@ class WelcomeMail extends BaseMailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to ' . config('app.name') . '!',
+            subject: 'Reset Your Password - ' . config('app.name'),
         );
     }
 
@@ -32,7 +33,7 @@ class WelcomeMail extends BaseMailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.welcome',
+            view: 'emails.password-reset',
         );
     }
 
