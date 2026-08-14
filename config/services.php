@@ -40,4 +40,22 @@ return [
         'api_key' => env('TERMII_API_KEY'),
     ],
 
+    'paystack' => [
+        'public_key' => env('PAYSTACK_PUBLIC_KEY'),
+        'secret_key' => env('PAYSTACK_SECRET_KEY'),
+        'payment_url' => env('PAYSTACK_PAYMENT_URL', 'https://api.paystack.co'),
+    ],
+
+    'monnify' => [
+        'api_key' => env('MONNIFY_API_KEY'),
+        'secret_key' => env('MONNIFY_SECRET_KEY'),
+        'contract_code' => env('MONNIFY_CONTRACT_CODE'),
+        'base_url' => env('MONNIFY_BASE_URL', 'https://api.monnify.com'),
+    ],
+
+    'clearwox' => [
+        'base_url' => env('CLEARWOX_BASE_URL', 'https://api.example.com'),
+        'api_token' => env('CLEARWOX_API_TOKEN'),
+    ],
+
 ];

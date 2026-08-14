@@ -13,7 +13,7 @@
 
         <div class="mt-5">
             <!-- Google Sign-in -->
-            <a class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg bg-gray-100 border border-gray-200 text-foreground shadow-sm hover:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none focus:outline-none"
+            <!-- <a class="w-full py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg bg-gray-100 border border-gray-200 text-foreground shadow-sm hover:bg-gray-200 disabled:opacity-50 disabled:pointer-events-none focus:outline-none"
                 href="#">
                 <svg class="w-4 h-auto" width="46" height="47" viewBox="0 0 46 47" fill="none">
                     <path
@@ -30,14 +30,14 @@
                         fill="#EB4335" />
                 </svg>
                 Sign in with Google
-            </a>
+            </a> -->
 
             <!-- Divider -->
-            <div class="py-3 flex items-center text-xs text-muted-foreground uppercase
+            <!-- <div class="py-3 flex items-center text-xs text-muted-foreground uppercase
                 before:flex-1 before:border-t before:border-gray-200 before:me-6
                 after:flex-1 after:border-t after:border-gray-200 after:ms-6">
                 Or
-            </div>
+            </div> -->
 
             <!-- Session Status -->
             <x-auth-session-status class="mb-4" :status="session('status')" />

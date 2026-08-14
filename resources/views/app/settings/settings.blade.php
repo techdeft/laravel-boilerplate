@@ -15,6 +15,7 @@ use Laravel\Fortify\Actions\GenerateNewRecoveryCodes;
 use Laravel\Fortify\Actions\ConfirmTwoFactorAuthentication;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Livewire\Attributes\Url;
 
 new class extends Component {
 
@@ -28,6 +29,7 @@ new class extends Component {
     public string $password_confirmation = '';
 
     // ── Active tab ────────────────────────────────────────────────
+    #[Url]
     public string $tab = 'profile';
 
     // ── TWO FACTOR AUTHENTICATION ─────────────────────────────────
@@ -38,6 +40,16 @@ new class extends Component {
     public string $qrCodeSvg = '';
     public string $setupKey = '';
 
+    // ── SYSTEM SETTINGS (Admin Only) ─────────────────────────────
+    public string $siteLogo = '';
+    public bool $paystackEnabled = true;
+    public bool $monnifyEnabled = true;
+    public bool $transferEnabled = true;
+    public bool $podEnabled = true;
+    public string $metaKeywords = '';
+    public string $metaDescription = '';
+    public bool $showMediaLibrary = false;
+
     public function mount(): void
     {
         if (Fortify::confirmsTwoFactorAuthentication() && is_null(Auth::user()->two_factor_confirmed_at)) {
@@ -46,6 +58,21 @@ new class extends Component {
 
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+
+        if (Auth::user()->hasRole('admin')) {
+            $this->loadSystemSettings();
+        }
+    }
+
+    public function loadSystemSettings()
+    {
+        $this->siteLogo = \App\Models\SiteSetting::getValue('site_logo', '');
+        $this->paystackEnabled = \App\Models\SiteSetting::getValue('paystack_enabled', true);
+        $this->monnifyEnabled = \App\Models\SiteSetting::getValue('monnify_enabled', true);
+        $this->transferEnabled = \App\Models\SiteSetting::getValue('transfer_enabled', true);
+        $this->podEnabled = \App\Models\SiteSetting::getValue('pod_enabled', true);
+        $this->metaKeywords = \App\Models\SiteSetting::getValue('meta_keywords', '');
+        $this->metaDescription = \App\Models\SiteSetting::getValue('meta_description', '');
     }
 
     // ── PROFILE ───────────────────────────────────────────────────
@@ -179,6 +206,38 @@ new class extends Component {
         $this->setupKey = '';
     }
 
+    // ── SYSTEM SETTINGS ACTIONS ──────────────────────────────────
+
+    use \Livewire\WithFileUploads;
+
+    public function selectMedia($path)
+    {
+        $this->siteLogo = $path;
+        $this->showMediaLibrary = false;
+    }
+
+    public function updateSystemSettings()
+    {
+        if (!Auth::user()->hasRole('admin'))
+            return;
+
+        $this->validate([
+            'metaKeywords' => 'nullable|string',
+            'metaDescription' => 'nullable|string',
+        ]);
+
+        \App\Models\SiteSetting::setValue('site_logo', $this->siteLogo, 'image');
+
+        \App\Models\SiteSetting::setValue('paystack_enabled', $this->paystackEnabled, 'boolean');
+        \App\Models\SiteSetting::setValue('monnify_enabled', $this->monnifyEnabled, 'boolean');
+        \App\Models\SiteSetting::setValue('transfer_enabled', $this->transferEnabled, 'boolean');
+        \App\Models\SiteSetting::setValue('pod_enabled', $this->podEnabled, 'boolean');
+        \App\Models\SiteSetting::setValue('meta_keywords', $this->metaKeywords, 'string');
+        \App\Models\SiteSetting::setValue('meta_description', $this->metaDescription, 'string');
+
+        Session::flash('system_success', 'System settings updated successfully.');
+    }
+
     #[Computed]
     public function user()
     {
@@ -192,6 +251,12 @@ new class extends Component {
     {
         return Auth::user() instanceof MustVerifyEmail && !Auth::user()->hasVerifiedEmail();
     }
+
+    #[Computed]
+    public function mediaItems()
+    {
+        return \App\Models\Media::latest()->take(30)->get();
+    }
 }; ?>
 
 
@@ -199,22 +264,28 @@ new class extends Component {
 
     {{-- Page heading --}}
     <div>
-        <h2 class="text-xl font-semibold text-foreground">Settings</h2>
-        <p class="text-sm text-muted-foreground mt-1">Manage your profile, password and account preferences.</p>
+        <h2 class="text-xl font-semibold text-foreground">
+            {{ $tab === 'system' ? 'System Configuration' : 'Account Settings' }}
+        </h2>
+        <p class="text-sm text-muted-foreground mt-1">
+            {{ $tab === 'system' ? 'Manage global site configuration and branding.' : 'Manage your profile, password and account preferences.' }}
+        </p>
     </div>
 
     {{-- Tab Bar --}}
-    <div class="flex gap-1 border-b border-gray-200">
-        @foreach (['profile' => 'Profile', 'password' => 'Password', 'two-factor' => 'Two-Factor Auth', 'danger' => 'Danger Zone'] as $key => $label)
-            <button wire:click="$set('tab', '{{ $key }}')" @class([
-                'px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
-                'border-primary-500 text-primary-600' => $tab === $key,
-                'border-transparent text-muted-foreground hover:text-foreground' => $tab !== $key,
-            ])>
-                {{ $label }}
-            </button>
-        @endforeach
-    </div>
+    @if ($tab !== 'system')
+        <div class="flex gap-1 border-b border-gray-200">
+            @foreach (['profile' => 'Profile', 'password' => 'Password', 'two-factor' => 'Two-Factor Auth', 'danger' => 'Danger Zone'] as $key => $label)
+                <button wire:click="$set('tab', '{{ $key }}')" @class([
+                    'px-4 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors',
+                    'border-primary-500 text-primary-600' => $tab === $key,
+                    'border-transparent text-muted-foreground hover:text-foreground' => $tab !== $key,
+                ])>
+                    {{ $label }}
+                </button>
+            @endforeach
+        </div>
+    @endif
 
     {{-- ══ TAB: Profile ══════════════════════════════════════════ --}}
     @if ($tab === 'profile')
@@ -252,8 +323,8 @@ new class extends Component {
                         <label for="name" class="block text-sm font-medium text-foreground mb-1.5">Full name</label>
                         <input wire:model="name" type="text" id="name" autocomplete="name"
                             class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-foreground bg-transparent
-                                                                   placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500
-                                                                   @error('name') border-red-400 focus:ring-red-400 @enderror">
+                                                                               placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500
+                                                                               @error('name') border-red-400 focus:ring-red-400 @enderror">
                         @error('name') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
 
@@ -263,8 +334,8 @@ new class extends Component {
                             address</label>
                         <input wire:model="email" type="email" id="email" autocomplete="email"
                             class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-foreground bg-transparent
-                                                                   placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500
-                                                                   @error('email') border-red-400 focus:ring-red-400 @enderror">
+                                                                               placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500
+                                                                               @error('email') border-red-400 focus:ring-red-400 @enderror">
                         @error('email') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                     </div>
                 </div>
@@ -311,8 +382,8 @@ new class extends Component {
                     <input wire:model="current_password" type="password" id="current_password"
                         autocomplete="current-password"
                         class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-foreground bg-transparent
-                                                               placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500
-                                                               @error('current_password') border-red-400 focus:ring-red-400 @enderror">
+                                                                            placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500
+                                                                            @error('current_password') border-red-400 focus:ring-red-400 @enderror">
                     @error('current_password') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
 
@@ -320,8 +391,8 @@ new class extends Component {
                     <label for="password" class="block text-sm font-medium text-foreground mb-1.5">New password</label>
                     <input wire:model="password" type="password" id="password" autocomplete="new-password"
                         class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-foreground bg-transparent
-                                                               placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500
-                                                               @error('password') border-red-400 focus:ring-red-400 @enderror">
+                                                                            placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500
+                                                                            @error('password') border-red-400 focus:ring-red-400 @enderror">
                     @error('password') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
 
@@ -331,7 +402,7 @@ new class extends Component {
                     <input wire:model="password_confirmation" type="password" id="password_confirmation"
                         autocomplete="new-password"
                         class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-foreground bg-transparent
-                                                               placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500">
+                                                                            placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500">
                 </div>
 
                 <div class="flex justify-end pt-2">
@@ -470,9 +541,10 @@ new class extends Component {
                         Confirm your password to continue
                     </label>
                     <input wire:model="current_password" type="password" id="delete_password"
-                        autocomplete="current-password" class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-foreground bg-transparent
-                                                               placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500
-                                                               @error('current_password') border-red-400 @enderror">
+                        autocomplete="current-password"
+                        class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-foreground bg-transparent
+                                                                               placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500
+                                                                               @error('current_password') border-red-400 @enderror">
                     @error('current_password') <p class="mt-1 text-xs text-red-600">{{ $message }}</p> @enderror
                 </div>
 
@@ -483,6 +555,175 @@ new class extends Component {
                     </button>
                 </div>
             </form>
+        </div>
+    @endif
+
+    {{-- ══ TAB: System Settings (Admin) ═══════════════════════════ --}}
+    @if ($tab === 'system' && auth()->user()->hasRole('admin'))
+        <div class="bg-card border border-gray-200 rounded-xl p-6 space-y-8">
+            <div>
+                <h3 class="text-base font-semibold text-foreground">System Configuration</h3>
+                <p class="text-sm text-muted-foreground mt-0.5">Manage global site settings including branding, payments and
+                    SEO.</p>
+            </div>
+
+            @if (session('system_success'))
+                <div class="flex items-center gap-2 p-3 rounded-lg bg-green-50 border border-green-200 text-sm text-green-700">
+                    <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                    {{ session('system_success') }}
+                </div>
+            @endif
+
+            <form wire:submit.prevent="updateSystemSettings" class="space-y-8">
+                <div class="space-y-4">
+                    <h4 class="text-sm font-bold uppercase text-gray-400 tracking-wider">Branding</h4>
+                    <div class="flex items-start gap-6">
+                        <div class="shrink-0">
+                            @if ($siteLogo)
+                                <img src="{{ Storage::url($siteLogo) }}"
+                                    class="h-20 w-auto rounded border border-gray-200 bg-gray-50 object-contain p-2">
+                            @else
+                                <div
+                                    class="h-20 w-40 rounded border border-dashed border-gray-300 flex items-center justify-center text-xs text-gray-400">
+                                    No Logo</div>
+                            @endif
+                        </div>
+                        <div class="flex-1">
+                            <label class="block text-sm font-medium text-foreground mb-1.5">Site Logo</label>
+                            <button type="button" wire:click="$set('showMediaLibrary', true)"
+                                class="px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">
+                                {{ $siteLogo ? 'Change Logo' : 'Select Logo' }}
+                            </button>
+                            <p class="mt-1.5 text-xs text-muted-foreground">Select an image from the media library.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                {{-- Payment Options Section --}}
+                <div class="space-y-4">
+                    <h4 class="text-sm font-bold uppercase text-gray-400 tracking-wider">Active Payment Gateways</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <label
+                            class="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="size-8 bg-blue-50 text-blue-600 rounded flex items-center justify-center font-bold text-xs">
+                                    PS</div>
+                                <span class="text-sm font-medium">Paystack</span>
+                            </div>
+                            <input type="checkbox" wire:model="paystackEnabled"
+                                class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 h-5 w-5">
+                        </label>
+
+                        <label
+                            class="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="size-8 bg-purple-50 text-purple-600 rounded flex items-center justify-center font-bold text-xs">
+                                    MN</div>
+                                <span class="text-sm font-medium">Monnify</span>
+                            </div>
+                            <input type="checkbox" wire:model="monnifyEnabled"
+                                class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 h-5 w-5">
+                        </label>
+
+                        <label
+                            class="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <div class="size-8 bg-green-50 text-green-600 rounded flex items-center justify-center">
+                                    <i class="fa-solid fa-building-columns text-xs"></i>
+                                </div>
+                                <span class="text-sm font-medium">Manual Transfer</span>
+                            </div>
+                            <input type="checkbox" wire:model="transferEnabled"
+                                class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 h-5 w-5">
+                        </label>
+
+                        <label
+                            class="flex items-center justify-between p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                            <div class="flex items-center gap-3">
+                                <div class="size-8 bg-amber-50 text-amber-600 rounded flex items-center justify-center">
+                                    <i class="fa-solid fa-truck-fast text-xs"></i>
+                                </div>
+                                <span class="text-sm font-medium">Pay on Delivery</span>
+                            </div>
+                            <input type="checkbox" wire:model="podEnabled"
+                                class="rounded border-gray-300 text-primary-600 focus:ring-primary-500 h-5 w-5">
+                        </label>
+                    </div>
+                </div>
+
+                <hr class="border-gray-100">
+
+                {{-- SEO Section --}}
+                <div class="space-y-4">
+                    <h4 class="text-sm font-bold uppercase text-gray-400 tracking-wider">SEO & Metadata</h4>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-1.5">Meta Keywords</label>
+                            <input type="text" wire:model="metaKeywords"
+                                placeholder="e.g. pharmacy, medication, online health shop"
+                                class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-foreground bg-transparent focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-1.5">Meta Description</label>
+                            <textarea wire:model="metaDescription" rows="3"
+                                placeholder="A brief description of your site for search engines..."
+                                class="w-full px-3 py-2.5 rounded-lg border border-gray-200 text-sm text-foreground bg-transparent focus:outline-none focus:ring-1 focus:ring-primary-500 focus:border-primary-500"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button type="submit" wire:loading.attr="disabled"
+                        class="px-6 py-2.5 rounded-lg bg-primary-500 text-white text-sm font-medium hover:bg-primary-600 transition-colors flex items-center gap-2">
+                        <span wire:loading.remove>Update Configuration</span>
+                        <span wire:loading>Processing...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    @endif
+
+    {{-- Media Selector Modal --}}
+    @if($showMediaLibrary)
+        <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            <div class="bg-white rounded-3xl w-full max-w-5xl h-[85vh] flex flex-col shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
+                <div class="p-8 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 tracking-tight">Select Site Logo</h3>
+                        <p class="text-sm text-gray-500">Pick an image from your existing library.</p>
+                    </div>
+                    <button type="button" @click="$wire.set('showMediaLibrary', false)"
+                        class="p-3 bg-white hover:bg-red-50 hover:text-red-500 rounded-2xl transition-all shadow-sm">
+                        <svg class="size-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.6"
+                                d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex-1 p-8 overflow-y-auto grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-5 bg-gray-50/20">
+                    @forelse($this->mediaItems as $media)
+                        <div wire:click="selectMedia('{{ $media->file_path }}')"
+                            class="group relative aspect-square rounded-2xl overflow-hidden border-2 border-transparent hover:border-primary-500 cursor-pointer transition-all bg-white shadow-sm">
+                            <img src="{{ Storage::url($media->file_path) }}" class="w-full h-full object-cover">
+                            <div
+                                class="absolute inset-0 bg-primary-900/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <span
+                                    class="px-3 py-1 bg-white text-primary-900 text-[10px] font-bold rounded-lg shadow-lg uppercase tracking-wider">Select</span>
+                            </div>
+                        </div>
+                    @empty
+                        <div class="col-span-full py-24 text-center">
+                            <p class="text-gray-400 italic">No media found in your library.</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
         </div>
     @endif
 

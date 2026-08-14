@@ -1,5 +1,5 @@
 <x-auth-layout title="Register" description="Create a new account">
-    <div class="p-4 sm:p-7">
+    <div class="sm:p-1">
         <div class="text-center">
             <h3 class="block text-2xl font-bold text-foreground">Create an account</h3>
             <p class="mt-2 text-sm text-muted-foreground">
@@ -9,8 +9,8 @@
             </p>
         </div>
 
-        <div class="mt-6">
-            <x-auth-session-status class="text-center mb-4" :status="session('status')" />
+        <div class="mt-3">
+            <x-auth-session-status class="text-center mb-2" :status="session('status')" />
 
             <form method="POST" action="{{ route('register.store') }}" x-data="{ submitting: false }"
                 @submit="submitting = true">
@@ -33,6 +33,15 @@
                             placeholder="email@example.com" autocomplete="email" required
                             class="py-2.5 px-4 block w-full border border-gray-200 rounded-lg text-sm text-foreground bg-transparent placeholder:text-muted-foreground focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 disabled:opacity-50">
                         <x-action-message field="email" />
+                    </div>
+
+                    <!-- Phone -->
+                    <div>
+                        <label for="phone" class="block text-sm mb-2 text-foreground">Phone number</label>
+                        <input type="text" id="phone" name="phone" value="{{ old('phone') }}" placeholder="08000000000"
+                            autocomplete="phone" required
+                            class="py-2.5 px-4 block w-full border border-gray-200 rounded-lg text-sm text-foreground bg-transparent placeholder:text-muted-foreground focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 disabled:opacity-50">
+                        <x-action-message field="phone" />
                     </div>
 
                     <!-- Password -->

@@ -107,7 +107,7 @@ HEADER — top bar for the app layout (mobile toggle + actions)
                     <p class="text-sm font-semibold text-foreground truncate">{{ auth()->user()->name }}</p>
                     <p class="text-xs text-muted-foreground truncate">{{ auth()->user()->email }}</p>
                 </div>
-                <a href="{{ route('profile.edit') }}" wire:navigate
+                <a href="{{ route('app.settings') }}" wire:navigate
                     class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-gray-100 transition-colors">
                     <svg class="size-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="1.75">
@@ -116,7 +116,7 @@ HEADER — top bar for the app layout (mobile toggle + actions)
                     </svg>
                     Profile
                 </a>
-                <a href="{{ route('appearance.edit') }}" wire:navigate
+                <a href="{{ route('app.settings') }}" wire:navigate
                     class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-gray-100 transition-colors">
                     <svg class="size-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="1.75">

@@ -21,3 +21,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+*.zip
+log_tail.txt
+test_output*.txt
+test2fa.php

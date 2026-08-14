@@ -29,7 +29,8 @@ class CreateNewUser implements CreatesNewUsers
             'uuid' => (string) Str::uuid(),
             'name' => $input['name'],
             'email' => $input['email'],
+            'phone' => $input['phone'],
             'password' => $input['password'],
-        ]);
+        ])->assignRole('user');
     }
 }

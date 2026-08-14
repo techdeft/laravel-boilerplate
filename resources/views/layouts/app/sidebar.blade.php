@@ -8,12 +8,13 @@ SIDEBAR — fixed left navigation for the app layout
 
     {{-- ── Logo ──────────────────────────────────────────────── --}}
     <div class="flex items-center gap-3 px-5 py-5 border-b border-gray-200 shrink-0">
-        <div class="flex items-center justify-center size-8 rounded-lg bg-primary-500">
+        <div class="flex items-center justify-center size-8 rounded-lg bg-blue-900">
             <svg class="size-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M19.423 15.621a2 2 0 00.394-3.115l-1.233-1.233a2 2 0 010-2.828l1.233-1.233a2 2 0 00-.394-3.115 2 2 0 00-3.115-.394l-1.233 1.233a2 2 0 01-2.828 0l-1.233-1.233a2 2 0 00-3.115.394 2 2 0 00-.394 3.115l1.233 1.233a2 2 0 010 2.828l-1.233 1.233a2 2 0 00.394 3.115 2 2 0 003.115.394l1.233-1.233a2 2 0 012.828 0l1.233 1.233a2 2 0 003.115-.394zM10 10l-1 1" />
             </svg>
         </div>
-        <span class="text-base font-semibold text-foreground tracking-tight">TradeFlow</span>
+        <span class="text-base font-semibold text-foreground tracking-tight">MedMall Admin</span>
     </div>
 
     {{-- ── Scrollable nav ────────────────────────────────────── --}}
@@ -40,98 +41,194 @@ SIDEBAR — fixed left navigation for the app layout
                     </a>
                 </li>
                 <li>
-                    <a href="#" wire:navigate @class([
+                    <a href="{{ route('admin.media') }}" wire:navigate @class([
                         'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                        'bg-primary-50 text-primary-600 font-semibold' => request()->routeIs('wallet*'),
-                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !request()->routeIs('wallet*'),
+                        'bg-blue-50 text-blue-900 font-semibold' => request()->routeIs('admin.media'),
+                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !request()->routeIs('admin.media'),
                     ])>
                         <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="1.75">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
-                        Wallet
+                        Media Library
                     </a>
                 </li>
                 <li>
-                    <a href="#" wire:navigate @class([
+                    <a href="{{ route('admin.home.slider') }}" wire:navigate @class([
                         'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                        'bg-primary-50 text-primary-600 font-semibold' => request()->routeIs('deposit*'),
-                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !request()->routeIs('deposit*'),
+                        'bg-blue-50 text-blue-900 font-semibold' => request()->routeIs('admin.home.slider'),
+                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !request()->routeIs('admin.home.slider'),
                     ])>
                         <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="1.75">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
                         </svg>
-                        Deposit
+                        Home Slider
                     </a>
                 </li>
                 <li>
-                    <a href="#" wire:navigate @class([
+                    <a href="{{ route('admin.orders.index') }}" wire:navigate @class([
                         'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                        'bg-primary-50 text-primary-600 font-semibold' => request()->routeIs('withdraw*'),
-                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !request()->routeIs('withdraw*'),
+                        'bg-blue-50 text-blue-900 font-semibold' => request()->routeIs('admin.orders.index') || request()->routeIs('admin.orders.details'),
+                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !(request()->routeIs('admin.orders.index') || request()->routeIs('admin.orders.details')),
                     ])>
                         <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="1.75">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4m8 8l8-8-8-8" />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                         </svg>
-                        Withdraw
+                        Orders
                     </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.products.index') }}" wire:navigate @class([
+                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                        'bg-blue-50 text-blue-900 font-semibold' => request()->routeIs('admin.products.index') || request()->routeIs('admin.products.create') || request()->routeIs('admin.products.edit'),
+                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !(request()->routeIs('admin.products.index') || request()->routeIs('admin.products.create') || request()->routeIs('admin.products.edit')),
+                    ])>
+                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1.75">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                        Products
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.customers.index') }}" wire:navigate @class([
+                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                        'bg-blue-50 text-blue-900 font-semibold' => request()->routeIs('admin.customers.index') || request()->routeIs('admin.customers.details'),
+                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !(request()->routeIs('admin.customers.index') || request()->routeIs('admin.customers.details')),
+                    ])>
+                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1.75">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                        Customers
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.delivery-fees') }}" wire:navigate @class([
+                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                        'bg-blue-50 text-blue-900 font-semibold' => request()->routeIs('admin.delivery-fees'),
+                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !request()->routeIs('admin.delivery-fees'),
+                    ])>
+                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1.75">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.806H14.25M16.5 18.75h-2.25m0-11.25v11.25m-14.25-4.5h14.25" />
+                        </svg>
+                        Delivery Fees
+                    </a>
+                </li>
+                <li x-data="{ open: @js(request()->routeIs('admin.bookings.*')) }">
+                    <button @click="open = !open"
+                        :class="open ? 'text-foreground bg-gray-50' : 'text-muted-foreground hover:bg-gray-100 hover:text-foreground'"
+                        class="flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="1.75">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            Bookings
+                        </div>
+                        <svg class="size-3.5 transition-transform duration-200" :class="open ? 'rotate-180' : ''"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <ul x-show="open" x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="opacity-0 -translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0" class="mt-1 px-2 space-y-1">
+                        <li>
+                            <a href="{{ route('admin.bookings.index') }}" wire:navigate @class([
+                                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                                'text-blue-700 font-semibold bg-blue-50/50' => request()->routeIs('admin.bookings.index'),
+                                'text-muted-foreground hover:text-foreground hover:bg-gray-50' => !request()->routeIs('admin.bookings.index'),
+                            ])>
+                                <div class="size-1.5 rounded-full border border-current"></div>
+                                All Bookings
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.bookings.settings') }}" wire:navigate @class([
+                                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                                'text-blue-700 font-semibold bg-blue-50/50' => request()->routeIs('admin.bookings.settings'),
+                                'text-muted-foreground hover:text-foreground hover:bg-gray-50' => !request()->routeIs('admin.bookings.settings'),
+                            ])>
+                                <div class="size-1.5 rounded-full border border-current"></div>
+                                Booking Settings
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="{{ route('app.settings', ['tab' => 'system']) }}" wire:navigate @class([
+                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                        'bg-blue-50 text-blue-900 font-semibold' => request()->query('tab') === 'system',
+                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => request()->query('tab') !== 'system',
+                    ])>
+                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1.75">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        System Settings
+                    </a>
+                </li>
+                <li
+                    x-data="{ open: @js(request()->routeIs('admin.categories') || request()->routeIs('admin.brands')) }">
+                    <button @click="open = !open"
+                        :class="open ? 'text-foreground bg-gray-50' : 'text-muted-foreground hover:bg-gray-100 hover:text-foreground'"
+                        class="flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors group">
+                        <div class="flex items-center gap-3">
+                            <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="1.75">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                            </svg>
+                            Catalog
+                        </div>
+                        <svg class="size-3.5 transition-transform duration-200" :class="open ? 'rotate-180' : ''"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <ul x-show="open" x-transition:enter="transition ease-out duration-100"
+                        x-transition:enter-start="opacity-0 -translate-y-2"
+                        x-transition:enter-end="opacity-100 translate-y-0" class="mt-1 px-2 space-y-1">
+                        <li>
+                            <a href="{{ route('admin.categories') }}" wire:navigate @class([
+                                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                                'text-blue-700 font-semibold bg-blue-50/50' => request()->routeIs('admin.categories'),
+                                'text-muted-foreground hover:text-foreground hover:bg-gray-50' => !request()->routeIs('admin.categories'),
+                            ])>
+                                <div class="size-1.5 rounded-full border border-current"></div>
+                                Categories
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.brands') }}" wire:navigate @class([
+                                'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                                'text-blue-700 font-semibold bg-blue-50/50' => request()->routeIs('admin.brands'),
+                                'text-muted-foreground hover:text-foreground hover:bg-gray-50' => !request()->routeIs('admin.brands'),
+                            ])>
+                                <div class="size-1.5 rounded-full border border-current"></div>
+                                Brands
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>
 
-        {{-- Trading --}}
-        <div>
-            <p class="px-3 mb-2 text-[0.65rem] font-semibold uppercase tracking-widest text-muted-foreground">
-                Trading
-            </p>
-            <ul class="space-y-0.5">
-                <li>
-                    <a href="#" wire:navigate @class([
-                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                        'bg-primary-50 text-primary-600 font-semibold' => request()->routeIs('bots*'),
-                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !request()->routeIs('bots*'),
-                    ])>
-                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="1.75">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-2" />
-                        </svg>
-                        Trading Bots
-                    </a>
-                </li>
-                <li>
-                    <a href="#" wire:navigate @class([
-                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                        'bg-primary-50 text-primary-600 font-semibold' => request()->routeIs('trade-history*'),
-                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !request()->routeIs('trade-history*'),
-                    ])>
-                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="1.75">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        Trade History
-                    </a>
-                </li>
-                <li>
-                    <a href="#" wire:navigate @class([
-                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                        'bg-primary-50 text-primary-600 font-semibold' => request()->routeIs('referrals*'),
-                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !request()->routeIs('referrals*'),
-                    ])>
-                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="1.75">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
-                        Referrals
-                    </a>
-                </li>
-            </ul>
-        </div>
 
         {{-- Account --}}
         <div>
@@ -139,20 +236,6 @@ SIDEBAR — fixed left navigation for the app layout
                 Account
             </p>
             <ul class="space-y-0.5">
-                <li>
-                    <a href="{{ route('profile.edit') }}" wire:navigate @class([
-                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                        'bg-primary-50 text-primary-600 font-semibold' => request()->routeIs('profile.edit'),
-                        'text-muted-foreground hover:bg-gray-100 hover:text-foreground' => !request()->routeIs('profile.edit'),
-                    ])>
-                        <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                            stroke-width="1.75">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                        Profile
-                    </a>
-                </li>
                 <li>
                     <a href="{{ route('app.settings') }}" wire:navigate @class([
                         'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
@@ -162,11 +245,12 @@ SIDEBAR — fixed left navigation for the app layout
                         <svg class="size-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                             stroke-width="1.75">
                             <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
-                        Appearance
+                        Profile
                     </a>
                 </li>
+
             </ul>
         </div>
     </nav>
@@ -194,7 +278,7 @@ SIDEBAR — fixed left navigation for the app layout
             {{-- Dropdown --}}
             <div x-show="menuOpen" @click.outside="menuOpen = false" x-transition
                 class="absolute bottom-full left-0 right-0 mb-1 bg-card border border-gray-200 rounded-lg shadow-lg overflow-hidden z-10">
-                <a href="{{ route('profile.edit') }}" wire:navigate
+                <a href="{{ route('app.settings') }}" wire:navigate
                     class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-gray-100 transition-colors">
                     <svg class="size-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="1.75">
@@ -203,7 +287,7 @@ SIDEBAR — fixed left navigation for the app layout
                     </svg>
                     My Profile
                 </a>
-                <a href="{{ route('appearance.edit') }}" wire:navigate
+                <a href="{{ route('app.settings') }}" wire:navigate
                     class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-foreground hover:bg-gray-100 transition-colors">
                     <svg class="size-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor"
                         stroke-width="1.75">

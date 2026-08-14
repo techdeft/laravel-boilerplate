@@ -10,9 +10,12 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\Login;
 use App\Listeners\SendWelcomeEmail;
+use App\Listeners\MergeCartOnLogin;
 use App\Contracts\SmsProviderInterface;
 use App\Services\Providers\TermiiService;
+use Livewire\Volt\Volt;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -41,6 +44,22 @@ class AppServiceProvider extends ServiceProvider
             Registered::class,
             SendWelcomeEmail::class,
         );
+
+        Event::listen(
+            Registered::class,
+            MergeCartOnLogin::class,
+        );
+
+        Event::listen(
+            Login::class,
+            MergeCartOnLogin::class,
+        );
+
+        Volt::mount([
+            resource_path('views/guest'),
+            resource_path('views/livewire'),
+            resource_path('views'),
+        ]);
     }
 
     /**
