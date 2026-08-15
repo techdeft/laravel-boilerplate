@@ -8,6 +8,7 @@ use Livewire\Attributes\Layout;
 new #[Layout('layouts.app.app')] class extends Component {
     public $name = '';
     public $slug = '';
+    public $parent_id = null;
     public $search = '';
     public $editingCategory = null;
 
@@ -21,21 +22,22 @@ new #[Layout('layouts.app.app')] class extends Component {
         $this->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|unique:categories,slug,' . ($this->editingCategory?->id ?? 'NULL'),
+            'parent_id' => 'nullable|exists:categories,id|different:editingCategory.id',
         ]);
 
+        $data = [
+            'name' => $this->name,
+            'slug' => $this->slug,
+            'parent_id' => $this->parent_id ?: null,
+        ];
+
         if ($this->editingCategory) {
-            $this->editingCategory->update([
-                'name' => $this->name,
-                'slug' => $this->slug,
-            ]);
+            $this->editingCategory->update($data);
         } else {
-            Category::create([
-                'name' => $this->name,
-                'slug' => $this->slug,
-            ]);
+            Category::create($data);
         }
 
-        $this->reset(['name', 'slug', 'editingCategory']);
+        $this->reset(['name', 'slug', 'parent_id', 'editingCategory']);
         $this->dispatch('category-saved');
     }
 
@@ -44,6 +46,7 @@ new #[Layout('layouts.app.app')] class extends Component {
         $this->editingCategory = $category;
         $this->name = $category->name;
         $this->slug = $category->slug;
+        $this->parent_id = $category->parent_id;
     }
 
     public function delete(Category $category)
@@ -54,15 +57,20 @@ new #[Layout('layouts.app.app')] class extends Component {
 
     public function cancel()
     {
-        $this->reset(['name', 'slug', 'editingCategory']);
+        $this->reset(['name', 'slug', 'parent_id', 'editingCategory']);
     }
 
     public function with()
     {
         return [
-            'categories' => Category::where('name', 'like', '%' . $this->search . '%')
+            'categories' => Category::with('parent')
+                ->where('name', 'like', '%' . $this->search . '%')
                 ->latest()
                 ->paginate(10),
+            'parentCategories' => Category::whereNull('parent_id')
+                ->when($this->editingCategory, fn($q) => $q->where('id', '!=', $this->editingCategory->id))
+                ->orderBy('name')
+                ->get(),
         ];
     }
 }; ?>
@@ -70,8 +78,8 @@ new #[Layout('layouts.app.app')] class extends Component {
 <div class="p-6 space-y-6">
     <div class="flex justify-between items-center bg-white p-6 rounded-2xl ">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Category Management</h1>
-            <p class="text-gray-500 text-sm">Organize your products by managing categories.</p>
+            <h1 class="text-2xl font-bold text-gray-900">Category & Subcategory Management</h1>
+            <p class="text-gray-500 text-sm">Organize your products into main categories and subcategories.</p>
         </div>
     </div>
 
@@ -82,14 +90,27 @@ new #[Layout('layouts.app.app')] class extends Component {
             <form wire:submit.prevent="save" class="space-y-5">
                 <div class="space-y-1.5">
                     <label class="block text-sm font-semibold text-gray-700">Category Name</label>
-                    <input type="text" wire:model.live="name" placeholder="e.g. Vitamins & Supplements"
+                    <input type="text" wire:model.live="name" placeholder="e.g. Pain Relief"
                         class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('name') border-red-500 @enderror">
                     @error('name') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="space-y-1.5">
+                    <label class="block text-sm font-semibold text-gray-700">Parent Category (Optional)</label>
+                    <select wire:model="parent_id"
+                        class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('parent_id') border-red-500 @enderror">
+                        <option value="">None (Main Category)</option>
+                        @foreach($parentCategories as $parent)
+                            <option value="{{ $parent->id }}">{{ $parent->name }}</option>
+                        @endforeach
+                    </select>
+                    <p class="text-[11px] text-gray-400">Select a parent category to create a subcategory.</p>
+                    @error('parent_id') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="space-y-1.5">
                     <label class="block text-sm font-semibold text-gray-700">Slug (Auto-generated)</label>
-                    <input type="text" wire:model="slug" placeholder="vitamins-supplements"
+                    <input type="text" wire:model="slug" placeholder="pain-relief"
                         class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('slug') border-red-500 @enderror">
                     @error('slug') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
                 </div>
@@ -112,7 +133,7 @@ new #[Layout('layouts.app.app')] class extends Component {
         {{-- List Section --}}
         <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <h3 class="text-lg font-bold">All Categories</h3>
+                <h3 class="text-lg font-bold">All Categories & Subcategories</h3>
                 <div class="relative w-full md:w-64">
                     <input type="text" wire:model.live="search" placeholder="Search categories..."
                         class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none">
@@ -129,6 +150,7 @@ new #[Layout('layouts.app.app')] class extends Component {
                         class="bg-gray-50 text-[11px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-100">
                         <tr>
                             <th class="px-6 py-4">Name</th>
+                            <th class="px-6 py-4">Type / Parent</th>
                             <th class="px-6 py-4">Slug</th>
                             <th class="px-6 py-4">Created At</th>
                             <th class="px-6 py-4 text-right">Actions</th>
@@ -138,7 +160,24 @@ new #[Layout('layouts.app.app')] class extends Component {
                         @forelse($categories as $category)
                             <tr class="hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4">
-                                    <span class="text-sm font-bold text-gray-900">{{ $category->name }}</span>
+                                    <div class="flex items-center gap-2">
+                                        @if($category->parent_id)
+                                            <span class="text-gray-400 text-xs pl-2">↳</span>
+                                        @endif
+                                        <span class="text-sm font-bold text-gray-900">{{ $category->name }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @if($category->parent)
+                                        <span class="px-2.5 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-semibold inline-flex items-center gap-1">
+                                            <span>Subcategory of</span>
+                                            <strong class="font-bold">{{ $category->parent->name }}</strong>
+                                        </span>
+                                    @else
+                                        <span class="px-2.5 py-1 bg-blue-50 text-blue-700 rounded-full text-xs font-bold">
+                                            Main Category
+                                        </span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4">
                                     <span
@@ -168,7 +207,7 @@ new #[Layout('layouts.app.app')] class extends Component {
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-12 text-center text-gray-400 italic">No categories found.
+                                <td colspan="5" class="px-6 py-12 text-center text-gray-400 italic">No categories found.
                                 </td>
                             </tr>
                         @endforelse

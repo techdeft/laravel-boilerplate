@@ -68,7 +68,7 @@ new #[Layout('layouts.app.app')] class extends Component {
     public function with()
     {
         return [
-            'categories' => Category::orderBy('name')->get(),
+            'categories' => Category::with('subcategories')->whereNull('parent_id')->orderBy('name')->get(),
             'brands' => Brand::orderBy('name')->get(),
             'mediaItems' => Media::latest()->take(30)->get(),
         ];
@@ -209,7 +209,10 @@ new #[Layout('layouts.app.app')] class extends Component {
                         class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all">
                         <option value="">Uncategorized</option>
                         @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}">{{ $cat->name }}</option>
+                            <option value="{{ $cat->id }}" class="font-bold">{{ $cat->name }}</option>
+                            @foreach($cat->subcategories as $sub)
+                                <option value="{{ $sub->id }}">&nbsp;&nbsp;&nbsp;&nbsp;↳ {{ $sub->name }}</option>
+                            @endforeach
                         @endforeach
                     </select>
                 </div>

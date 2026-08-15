@@ -28,19 +28,63 @@
                 Categories</span>
         </label>
         @foreach($categories as $category)
-            <label
-                class="flex items-center group cursor-pointer p-2 rounded-xl transition-colors {{ $selectedCategory === $category->slug ? 'bg-blue-50' : 'hover:bg-gray-50' }}">
-                <input type="radio" wire:model.live="selectedCategory" value="{{ $category->slug }}" class="hidden">
-                <div
-                    class="size-4 rounded-full border-2 flex items-center justify-center mr-3 transition-all {{ $selectedCategory === $category->slug ? 'border-blue-900 bg-blue-900' : 'border-gray-200 bg-white group-hover:border-blue-900/30' }}">
-                    @if($selectedCategory === $category->slug)
-                    <div class="size-1.5 bg-white rounded-full"></div> @endif
+            @php
+                $isChildSelected = $category->subcategories->pluck('slug')->contains($selectedCategory);
+                $isOpen = $selectedCategory === $category->slug || $isChildSelected;
+            @endphp
+            <div x-data="{ open: {{ $isOpen ? 'true' : 'false' }} }" class="space-y-1">
+                <div class="flex items-center justify-between group p-2 rounded-xl transition-colors {{ $selectedCategory === $category->slug ? 'bg-blue-50' : 'hover:bg-gray-50' }}">
+                    <label class="flex items-center flex-1 cursor-pointer min-w-0 pr-2">
+                        <input type="radio" wire:model.live="selectedCategory" value="{{ $category->slug }}" class="hidden">
+                        <div
+                            class="size-4 shrink-0 rounded-full border-2 flex items-center justify-center mr-3 transition-all {{ $selectedCategory === $category->slug ? 'border-blue-900 bg-blue-900' : 'border-gray-300 bg-white group-hover:border-blue-900/40' }}">
+                            @if($selectedCategory === $category->slug)
+                                <div class="size-1.5 bg-white rounded-full"></div>
+                            @endif
+                        </div>
+                        <span
+                            class="text-sm font-bold truncate transition-colors {{ $selectedCategory === $category->slug ? 'text-blue-900' : 'text-gray-700 group-hover:text-gray-900' }}">
+                            {{ $category->name }}
+                        </span>
+                    </label>
+
+                    @if($category->subcategories->count() > 0)
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ $isChildSelected ? 'bg-blue-100 text-blue-900' : 'bg-gray-100 text-gray-500' }} group-hover:bg-blue-100 group-hover:text-blue-900 transition-colors">
+                                {{ $category->subcategories->count() }}
+                            </span>
+                            <button type="button" @click="open = !open"
+                                class="p-1 text-gray-400 hover:text-blue-900 transition-colors focus:outline-none"
+                                title="Toggle subcategories">
+                                <svg class="size-4 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                        </div>
+                    @endif
                 </div>
-                <span
-                    class="text-sm font-bold transition-colors {{ $selectedCategory === $category->slug ? 'text-blue-900' : 'text-gray-500 group-hover:text-gray-900' }}">
-                    {{ $category->name }}
-                </span>
-            </label>
+
+                @if($category->subcategories->count() > 0)
+                    <div x-show="open" x-cloak class="pl-4 ml-3 border-l-2 border-blue-100 space-y-1 py-1">
+                        @foreach($category->subcategories as $sub)
+                            <label
+                                class="flex items-center group cursor-pointer py-1.5 px-2.5 rounded-lg transition-colors {{ $selectedCategory === $sub->slug ? 'bg-blue-50 text-blue-900 font-bold' : 'hover:bg-gray-50 text-gray-600' }}">
+                                <input type="radio" wire:model.live="selectedCategory" value="{{ $sub->slug }}" class="hidden">
+                                <div
+                                    class="size-3 shrink-0 rounded-full border-2 flex items-center justify-center mr-2.5 transition-all {{ $selectedCategory === $sub->slug ? 'border-blue-900 bg-blue-900' : 'border-gray-300 bg-white group-hover:border-blue-900/40' }}">
+                                    @if($selectedCategory === $sub->slug)
+                                        <div class="size-1 bg-white rounded-full"></div>
+                                    @endif
+                                </div>
+                                <span
+                                    class="text-xs transition-colors {{ $selectedCategory === $sub->slug ? 'text-blue-900 font-bold' : 'text-gray-600 group-hover:text-gray-900' }}">
+                                    {{ $sub->name }}
+                                </span>
+                            </label>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
         @endforeach
     </div>
 </div>

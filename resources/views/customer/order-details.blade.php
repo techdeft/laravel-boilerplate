@@ -37,8 +37,15 @@ new #[Layout('layouts.guest.app')] class extends Component {
                             </a>
                             <h1 class="text-[18px] font-medium text-gray-900">Order Details</h1>
                         </div>
-                        <span class="text-[14px] text-gray-500 font-bold uppercase tracking-tight">Order
-                            #{{ $order->order_number }}</span>
+                        <div class="flex items-center gap-3">
+                            <span class="text-[14px] text-gray-500 font-bold uppercase tracking-tight">Order
+                                #{{ $order->order_number }}</span>
+                            <button onclick="window.print()"
+                                class="px-3 py-1.5 bg-[#2b1770] hover:bg-[#1f1052] text-white text-xs font-bold rounded flex items-center gap-1.5 transition-all shadow-sm">
+                                <i class="fa-solid fa-print text-xs"></i>
+                                <span>Print Receipt</span>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="p-4 sm:p-6 border-b border-gray-100">
@@ -231,4 +238,103 @@ new #[Layout('layouts.guest.app')] class extends Component {
             </main>
         </div>
     </div>
+
+    {{-- Printable Receipt Template (Rendered only on print) --}}
+    <div id="printable-receipt" class="hidden print:block p-8 bg-white text-gray-900 max-w-3xl mx-auto font-sans">
+        <div class="flex justify-between items-start border-b-2 border-gray-900 pb-6 mb-6">
+            <div>
+                <h1 class="text-3xl font-black tracking-tight text-blue-950 uppercase">{{ config('app.name', 'MEDMALL') }}</h1>
+                <p class="text-xs text-gray-500 font-medium">Healthcare & Pharmacy Services</p>
+                <p class="text-xs text-gray-500 mt-1">Official Customer Order Receipt</p>
+            </div>
+            <div class="text-right">
+                <h2 class="text-xl font-bold text-gray-900">RECEIPT</h2>
+                <p class="text-sm font-mono text-gray-600 mt-1">#{{ $order->order_number }}</p>
+                <p class="text-xs text-gray-500 mt-1">Date: {{ $order->created_at->format('M d, Y H:i') }}</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 mb-8 text-sm">
+            <div>
+                <h3 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Billed / Shipped To</h3>
+                <p class="font-bold text-gray-900">{{ $order->address?->first_name ?? Auth::user()->name }} {{ $order->address?->last_name }}</p>
+                <p class="text-gray-600">{{ Auth::user()->email }}</p>
+                @if($order->address)
+                    <p class="text-gray-600">{{ $order->address->address_line }}</p>
+                    <p class="text-gray-600">{{ $order->address->city }}, {{ $order->address->region }}</p>
+                    <p class="text-gray-600">Phone: {{ $order->address->phone }}</p>
+                @endif
+            </div>
+            <div class="text-right">
+                <h3 class="text-xs font-bold uppercase text-gray-400 tracking-wider mb-2">Order Summary</h3>
+                <p class="text-gray-600"><span class="font-semibold">Order Status:</span> <span class="uppercase font-bold text-gray-900">{{ $order->status }}</span></p>
+                <p class="text-gray-600"><span class="font-semibold">Payment Method:</span> <span class="uppercase text-gray-900">{{ str_replace('_', ' ', $order->payment_method ?? 'Paystack') }}</span></p>
+                <p class="text-gray-600"><span class="font-semibold">Payment Status:</span> <span class="uppercase font-bold text-green-700">{{ $order->payment_status }}</span></p>
+                <p class="text-gray-600"><span class="font-semibold">Delivery Method:</span> <span class="uppercase text-gray-900">{{ str_replace('_', ' ', $order->delivery_method) }}</span></p>
+            </div>
+        </div>
+
+        <table class="w-full text-left mb-8 border-collapse">
+            <thead>
+                <tr class="border-b-2 border-gray-900 text-xs font-bold uppercase tracking-wider text-gray-700">
+                    <th class="py-3">Item Description</th>
+                    <th class="py-3 text-center">Qty</th>
+                    <th class="py-3 text-right">Unit Price</th>
+                    <th class="py-3 text-right">Total</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 text-sm">
+                @foreach($order->items as $item)
+                    <tr>
+                        <td class="py-3 font-medium text-gray-900">{{ $item->product->name }}</td>
+                        <td class="py-3 text-center text-gray-600">{{ $item->quantity }}</td>
+                        <td class="py-3 text-right text-gray-600">₦{{ number_format($item->price, 2) }}</td>
+                        <td class="py-3 text-right font-bold text-gray-900">₦{{ number_format($item->total, 2) }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+
+        <div class="flex justify-end mb-8">
+            <div class="w-64 space-y-2 text-sm">
+                <div class="flex justify-between text-gray-600">
+                    <span>Subtotal:</span>
+                    <span class="font-medium text-gray-900">₦{{ number_format($order->subtotal, 2) }}</span>
+                </div>
+                <div class="flex justify-between text-gray-600">
+                    <span>Delivery Fee:</span>
+                    <span class="font-medium text-gray-900">₦{{ number_format($order->delivery_fee, 2) }}</span>
+                </div>
+                <div class="flex justify-between text-base font-black text-gray-900 pt-2 border-t-2 border-gray-900">
+                    <span>Total Paid:</span>
+                    <span>₦{{ number_format($order->total_amount, 2) }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-200 pt-6 text-center text-xs text-gray-500 space-y-1">
+            <p class="font-bold text-gray-700">Thank you for ordering with {{ config('app.name', 'Medmall') }}!</p>
+            <p>Please keep this receipt for your records.</p>
+        </div>
+    </div>
 </div>
+
+<style>
+    @media print {
+        body * {
+            visibility: hidden !important;
+        }
+        #printable-receipt, #printable-receipt * {
+            visibility: visible !important;
+        }
+        #printable-receipt {
+            position: absolute !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100% !important;
+            display: block !important;
+            background: white !important;
+            padding: 20px !important;
+        }
+    }
+</style>

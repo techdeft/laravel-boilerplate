@@ -70,7 +70,10 @@ new #[Layout('layouts.guest.app')] class extends Component {
 
         if ($this->selectedCategory) {
             $query->whereHas('category', function ($q) {
-                $q->where('slug', $this->selectedCategory);
+                $q->where('slug', $this->selectedCategory)
+                  ->orWhereHas('parent', function ($pq) {
+                      $pq->where('slug', $this->selectedCategory);
+                  });
             });
         }
 
@@ -108,7 +111,7 @@ new #[Layout('layouts.guest.app')] class extends Component {
 
         return [
             'products' => $query->paginate(12),
-            'categories' => Category::orderBy('name')->get(),
+            'categories' => Category::with('subcategories')->whereNull('parent_id')->orderBy('name')->get(),
             'brands' => Brand::orderBy('name')->get(),
         ];
     }
