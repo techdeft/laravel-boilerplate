@@ -10,10 +10,13 @@ new #[Layout('layouts.app.app')] class extends Component {
 
     public $name = '';
     public $city = '';
+    public $area = '';
     public $country = 'Nigeria';
     public $delivery_fee = 0;
     public $local_park_fee = 0;
     public $local_park_instructions = '';
+    public $special_surcharge = 0;
+    public $free_delivery_threshold = null;
     public $is_active = true;
     public $search = '';
     public $editingZone = null;
@@ -21,41 +24,40 @@ new #[Layout('layouts.app.app')] class extends Component {
     public function save()
     {
         $this->validate([
-            'name' => 'required|string|max:255|unique:delivery_zones,name,' . ($this->editingZone?->id ?? 'NULL'),
+            'name' => 'required|string|max:255',
             'city' => 'nullable|string|max:255',
+            'area' => 'nullable|string|max:255',
             'country' => 'required|string|max:255',
             'delivery_fee' => 'required|numeric|min:0',
             'local_park_fee' => 'required|numeric|min:0',
             'local_park_instructions' => 'nullable|string',
+            'special_surcharge' => 'required|numeric|min:0',
+            'free_delivery_threshold' => 'nullable|numeric|min:0',
             'is_active' => 'boolean',
         ]);
 
+        $data = [
+            'name' => $this->name,
+            'city' => $this->city ?: null,
+            'area' => $this->area ?: null,
+            'country' => $this->country,
+            'delivery_fee' => $this->delivery_fee,
+            'local_park_fee' => $this->local_park_fee,
+            'local_park_instructions' => $this->local_park_instructions,
+            'special_surcharge' => $this->special_surcharge ?: 0,
+            'free_delivery_threshold' => $this->free_delivery_threshold ?: null,
+            'is_active' => $this->is_active,
+        ];
+
         if ($this->editingZone) {
-            $this->editingZone->update([
-                'name' => $this->name,
-                'city' => $this->city,
-                'country' => $this->country,
-                'delivery_fee' => $this->delivery_fee,
-                'local_park_fee' => $this->local_park_fee,
-                'local_park_instructions' => $this->local_park_instructions,
-                'is_active' => $this->is_active,
-            ]);
+            $this->editingZone->update($data);
             session()->flash('status', 'Delivery zone updated successfully.');
         } else {
-            DeliveryZone::create([
-                'name' => $this->name,
-                'city' => $this->city,
-                'country' => $this->country,
-                'delivery_fee' => $this->delivery_fee,
-                'local_park_fee' => $this->local_park_fee,
-                'local_park_instructions' => $this->local_park_instructions,
-                'is_active' => $this->is_active,
-            ]);
+            DeliveryZone::create($data);
             session()->flash('status', 'Delivery zone created successfully.');
         }
 
-        $this->reset(['name', 'city', 'country', 'delivery_fee', 'local_park_fee', 'local_park_instructions', 'is_active', 'editingZone']);
-        $this->country = 'Nigeria';
+        $this->resetForm();
     }
 
     public function edit(DeliveryZone $zone)
@@ -63,10 +65,13 @@ new #[Layout('layouts.app.app')] class extends Component {
         $this->editingZone = $zone;
         $this->name = $zone->name;
         $this->city = $zone->city;
+        $this->area = $zone->area;
         $this->country = $zone->country ?? 'Nigeria';
         $this->delivery_fee = $zone->delivery_fee;
         $this->local_park_fee = $zone->local_park_fee;
         $this->local_park_instructions = $zone->local_park_instructions;
+        $this->special_surcharge = $zone->special_surcharge ?? 0;
+        $this->free_delivery_threshold = $zone->free_delivery_threshold;
         $this->is_active = $zone->is_active;
     }
 
@@ -78,14 +83,28 @@ new #[Layout('layouts.app.app')] class extends Component {
 
     public function cancel()
     {
-        $this->reset(['name', 'city', 'country', 'delivery_fee', 'local_park_fee', 'local_park_instructions', 'is_active', 'editingZone']);
+        $this->resetForm();
+    }
+
+    private function resetForm()
+    {
+        $this->reset([
+            'name', 'city', 'area', 'country', 'delivery_fee', 'local_park_fee',
+            'local_park_instructions', 'special_surcharge', 'free_delivery_threshold',
+            'is_active', 'editingZone'
+        ]);
         $this->country = 'Nigeria';
+        $this->is_active = true;
     }
 
     public function with()
     {
         return [
-            'zones' => DeliveryZone::where('name', 'like', '%' . $this->search . '%')
+            'zones' => DeliveryZone::where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                      ->orWhere('city', 'like', '%' . $this->search . '%')
+                      ->orWhere('area', 'like', '%' . $this->search . '%');
+                })
                 ->latest()
                 ->paginate(10),
         ];
@@ -95,8 +114,8 @@ new #[Layout('layouts.app.app')] class extends Component {
 <div class="p-6 space-y-6">
     <div class="flex justify-between items-center bg-white p-6 rounded-2xl ">
         <div>
-            <h1 class="text-2xl font-bold text-gray-900">Delivery Fee Management</h1>
-            <p class="text-gray-500 text-sm">Manage regions and their corresponding delivery fees.</p>
+            <h1 class="text-2xl font-bold text-gray-900">Delivery Zone & Area Pricing Management</h1>
+            <p class="text-gray-500 text-sm">Configure flexible delivery fees by region, city, sub-area, and special surcharges.</p>
         </div>
     </div>
 
@@ -110,63 +129,84 @@ new #[Layout('layouts.app.app')] class extends Component {
         {{-- Form Section --}}
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 h-fit">
             <h3 class="text-lg font-bold mb-4">{{ $editingZone ? 'Edit Delivery Zone' : 'Add New Delivery Zone' }}</h3>
-            <form wire:submit.prevent="save" class="space-y-5">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-1.5">
-                        <label class="block text-sm font-semibold text-gray-700">Region/State Name</label>
-                        <input type="text" wire:model="name" placeholder="e.g. Lagos"
-                            class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('name') border-red-500 @enderror">
-                        @error('name') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
-                    </div>
+            <form wire:submit.prevent="save" class="space-y-4">
+                <div class="space-y-1.5">
+                    <label class="block text-sm font-semibold text-gray-700">Region / State Name</label>
+                    <input type="text" wire:model="name" placeholder="e.g. Lagos"
+                        class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('name') border-red-500 @enderror">
+                    @error('name') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-1.5">
                         <label class="block text-sm font-semibold text-gray-700">City (Optional)</label>
-                        <input type="text" wire:model="city" placeholder="e.g. Ikeja"
-                            class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('city') border-red-500 @enderror">
+                        <input type="text" wire:model="city" placeholder="e.g. Lekki"
+                            class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('city') border-red-500 @enderror">
                         @error('city') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
+                    </div>
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-semibold text-gray-700">Area (Optional)</label>
+                        <input type="text" wire:model="area" placeholder="e.g. Phase 2"
+                            class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('area') border-red-500 @enderror">
+                        @error('area') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="block text-sm font-semibold text-gray-700">Country</label>
                     <input type="text" wire:model="country" placeholder="e.g. Nigeria"
-                        class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('country') border-red-500 @enderror">
+                        class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('country') border-red-500 @enderror">
                     @error('country') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-3">
                     <div class="space-y-1.5">
-                        <label class="block text-sm font-semibold text-gray-700">Home Fee (₦)</label>
+                        <label class="block text-sm font-semibold text-gray-700">Home Delivery Fee (₦)</label>
                         <input type="number" step="0.01" wire:model="delivery_fee" placeholder="0.00"
-                            class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('delivery_fee') border-red-500 @enderror">
-                        @error('delivery_fee') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p>
-                        @enderror
+                            class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('delivery_fee') border-red-500 @enderror">
+                        @error('delivery_fee') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div class="space-y-1.5">
-                        <label class="block text-sm font-semibold text-gray-700">Park Fee (₦)</label>
+                        <label class="block text-sm font-semibold text-gray-700">Park Delivery Fee (₦)</label>
                         <input type="number" step="0.01" wire:model="local_park_fee" placeholder="0.00"
-                            class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('local_park_fee') border-red-500 @enderror">
-                        @error('local_park_fee') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p>
-                        @enderror
+                            class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('local_park_fee') border-red-500 @enderror">
+                        @error('local_park_fee') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-semibold text-gray-700">Area Surcharge (₦)</label>
+                        <input type="number" step="0.01" wire:model="special_surcharge" placeholder="0.00"
+                            class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('special_surcharge') border-red-500 @enderror">
+                        <p class="text-[10px] text-gray-400">Extra fee for remote areas.</p>
+                        @error('special_surcharge') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-sm font-semibold text-gray-700">Free Delivery Min (₦)</label>
+                        <input type="number" step="0.01" wire:model="free_delivery_threshold" placeholder="Optional e.g. 50000"
+                            class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('free_delivery_threshold') border-red-500 @enderror">
+                        <p class="text-[10px] text-gray-400">Min total for ₦0 delivery.</p>
+                        @error('free_delivery_threshold') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div class="space-y-1.5">
                     <label class="block text-sm font-semibold text-gray-700">Park Instructions</label>
                     <textarea wire:model="local_park_instructions" placeholder="e.g. Pickup at Young Shall Grow Motors"
-                        class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('local_park_instructions') border-red-500 @enderror min-h-[80px]"></textarea>
-                    @error('local_park_instructions') <p class="text-[11px] text-red-500 font-medium px-1">
-                        {{ $message }}
-                    </p> @enderror
+                        class="w-full px-4 py-2.5 bg-gray-50/50 border border-gray-200 rounded-xl text-sm transition-all focus:bg-white focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none @error('local_park_instructions') border-red-500 @enderror min-h-[70px]"></textarea>
+                    @error('local_park_instructions') <p class="text-[11px] text-red-500 font-medium px-1">{{ $message }}</p> @enderror
                 </div>
 
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 pt-1">
                     <input type="checkbox" wire:model="is_active" id="is_active"
                         class="size-4 text-blue-900 focus:ring-blue-900 border-gray-300 rounded">
-                    <label for="is_active" class="text-sm font-semibold text-gray-700">Active</label>
+                    <label for="is_active" class="text-sm font-semibold text-gray-700">Active Zone</label>
                 </div>
 
-                <div class="pt-4 flex gap-2">
+                <div class="pt-3 flex gap-2">
                     <button type="submit"
                         class="flex-1 bg-blue-900 text-white py-2.5 rounded-xl font-bold hover:bg-blue-800 shadow-sm transition-all">
                         {{ $editingZone ? 'Update Zone' : 'Create Zone' }}
@@ -186,7 +226,7 @@ new #[Layout('layouts.app.app')] class extends Component {
             <div class="p-6 border-b border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <h3 class="text-lg font-bold">All Delivery Zones</h3>
                 <div class="relative w-full md:w-64">
-                    <input type="text" wire:model.live="search" placeholder="Search zones..."
+                    <input type="text" wire:model.live="search" placeholder="Search region, city, or area..."
                         class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500 outline-none">
                     <svg class="size-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none"
                         viewBox="0 0 24 24" stroke="currentColor">
@@ -200,9 +240,9 @@ new #[Layout('layouts.app.app')] class extends Component {
                     <thead
                         class="bg-gray-50 text-[11px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-100">
                         <tr>
-                            <th class="px-6 py-4">Region/State</th>
-                            <th class="px-6 py-4">Home Fee</th>
-                            <th class="px-6 py-4">Park Fee</th>
+                            <th class="px-6 py-4">Location</th>
+                            <th class="px-6 py-4">Home / Park Fee</th>
+                            <th class="px-6 py-4">Surcharge / Free Min</th>
                             <th class="px-6 py-4">Status</th>
                             <th class="px-6 py-4 text-right">Actions</th>
                         </tr>
@@ -213,22 +253,33 @@ new #[Layout('layouts.app.app')] class extends Component {
                                 <td class="px-6 py-4">
                                     <div class="flex flex-col">
                                         <span class="text-sm font-bold text-gray-900">{{ $zone->name }}</span>
-                                        <span
-                                            class="text-[10px] text-gray-400 font-bold uppercase">{{ $zone->city ? $zone->city . ', ' : '' }}{{ $zone->country }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex flex-col">
-                                        <span
-                                            class="text-sm font-medium text-gray-700">₦{{ number_format($zone->delivery_fee, 0) }}</span>
-                                        <span class="text-[10px] text-gray-400 uppercase font-bold">Home</span>
+                                        <div class="flex items-center gap-1.5 text-xs text-gray-500 mt-0.5">
+                                            @if($zone->city)
+                                                <span class="font-medium text-blue-900 bg-blue-50 px-2 py-0.5 rounded">{{ $zone->city }}</span>
+                                            @endif
+                                            @if($zone->area)
+                                                <span class="font-medium text-purple-900 bg-purple-50 px-2 py-0.5 rounded">Area: {{ $zone->area }}</span>
+                                            @endif
+                                            <span class="text-[10px] text-gray-400 uppercase font-bold">{{ $zone->country }}</span>
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex flex-col text-sm">
-                                        <span
-                                            class="font-medium text-gray-700">₦{{ number_format($zone->local_park_fee, 0) }}</span>
-                                        <span class="text-[10px] text-gray-400 uppercase font-bold">Park</span>
+                                        <span class="font-bold text-gray-900">Home: ₦{{ number_format($zone->delivery_fee, 0) }}</span>
+                                        <span class="text-xs text-gray-500">Park: ₦{{ number_format($zone->local_park_fee, 0) }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-col text-xs">
+                                        @if($zone->special_surcharge > 0)
+                                            <span class="font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded w-fit">+₦{{ number_format($zone->special_surcharge, 0) }} Surcharge</span>
+                                        @else
+                                            <span class="text-gray-400">No Surcharge</span>
+                                        @endif
+                                        @if($zone->free_delivery_threshold)
+                                            <span class="text-green-700 font-medium mt-1">Free over ₦{{ number_format($zone->free_delivery_threshold, 0) }}</span>
+                                        @endif
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
@@ -261,7 +312,7 @@ new #[Layout('layouts.app.app')] class extends Component {
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4" class="px-6 py-12 text-center text-gray-400 italic">No delivery zones found.
+                                <td colspan="5" class="px-6 py-12 text-center text-gray-400 italic">No delivery zones found.
                                 </td>
                             </tr>
                         @endforelse

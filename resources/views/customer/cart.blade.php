@@ -87,7 +87,7 @@ new #[Layout('layouts.guest.app')] class extends Component {
                                                 {{ $item->product->name }}
                                             </h3>
                                             <p class="text-[12px] text-gray-500 mb-2">Seller: <span
-                                                    class="text-[#2b1770]">{{ $item->product->brand->name ?? 'MedMall' }}</span>
+                                                    class="text-[#2b1770]">{{ $item->product->brand->name ?? 'Medmall' }}</span>
                                             </p>
 
                                             <div class="flex items-center gap-2 mt-2">
@@ -231,12 +231,10 @@ new #[Layout('layouts.guest.app')] class extends Component {
                         </div>
                         <p class="text-[12px] text-gray-400">Excluding delivery fees</p>
                         <div class="mt-4">
-                            <a href="{{ route('customer.checkout') }}"
-                               @guest href="{{ route('login') }}" @endguest
-                               wire:navigate
-                               class="block w-full text-center bg-[#2b1770] hover:bg-[#3f238f] text-white py-3.5 rounded font-bold text-[14px] transition-all shadow-md uppercase
+                            <a href="{{ route('customer.checkout') }}" @guest href="{{ route('login') }}" @endguest
+                                wire:navigate class="block w-full text-center bg-[#2b1770] hover:bg-[#3f238f] text-white py-3.5 rounded font-bold text-[14px] transition-all shadow-md uppercase
                                @if($cartItems->isEmpty()) opacity-50 cursor-not-allowed @endif"
-                               @if($cartItems->isEmpty()) disabled @endif>
+                                @if($cartItems->isEmpty()) disabled @endif>
                                 Checkout (₦ {{ number_format($total, 0) }})
                             </a>
                         </div>

@@ -1,5 +1,5 @@
 <x-guest-layout>
-    @slot('title', 'About Us | MedMall')
+    @slot('title', 'About Us | Medmall')
 
     <div class="min-h-screen bg-white font-sans selection:bg-gray-100 selection:text-gray-900 overflow-x-hidden">
 
@@ -67,13 +67,13 @@
                         Bridging the gap between <span class="text-primary-600">patients and care.</span>
                     </h2>
                     <p class="text-lg text-gray-600 leading-relaxed">
-                        MedMall was founded on a simple principle: getting the medication and professional health advice
+                        Medmall was founded on a simple principle: getting the medication and professional health advice
                         you need shouldn't be complicated. By combining modern e-commerce technology with certified
                         medical professionals, we provide a unified platform for all your wellness needs.
                     </p>
                     <p class="text-lg text-gray-600 leading-relaxed">
                         Whether you are ordering your monthly prescriptions, scheduling a quick health consultation,
-                        or buying premium wellness products, MedMall guarantees speed, authenticity, and utmost privacy.
+                        or buying premium wellness products, Medmall guarantees speed, authenticity, and utmost privacy.
                     </p>
 
                     <div class="pt-8 border-t border-gray-100 flex items-center gap-6 md:gap-12">

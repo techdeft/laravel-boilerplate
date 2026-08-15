@@ -151,8 +151,30 @@ new #[Layout('layouts.guest.app')] class extends Component {
         if (!$this->selectedAddress)
             return null;
 
-        return DeliveryZone::where('name', $this->selectedAddress->region)
-            ->where('is_active', true)
+        $address = $this->selectedAddress;
+
+        // 1. Try matching Region + City + Area
+        if (!empty($address->city) && !empty($address->additional_info)) {
+            $zone = DeliveryZone::where('is_active', true)
+                ->where('name', $address->region)
+                ->where('city', $address->city)
+                ->where('area', $address->additional_info)
+                ->first();
+            if ($zone) return $zone;
+        }
+
+        // 2. Try matching Region + City
+        if (!empty($address->city)) {
+            $zone = DeliveryZone::where('is_active', true)
+                ->where('name', $address->region)
+                ->where('city', $address->city)
+                ->first();
+            if ($zone) return $zone;
+        }
+
+        // 3. Fallback to Region match
+        return DeliveryZone::where('is_active', true)
+            ->where('name', $address->region)
             ->first();
     }
 
@@ -181,9 +203,16 @@ new #[Layout('layouts.guest.app')] class extends Component {
         if (!$zone)
             return 1000; // Default fallback
 
-        return $this->deliveryMethod === 'home_delivery'
+        // Free delivery threshold check
+        if ($zone->free_delivery_threshold && $this->subtotal >= $zone->free_delivery_threshold) {
+            return 0;
+        }
+
+        $baseFee = $this->deliveryMethod === 'home_delivery'
             ? $zone->delivery_fee
             : $zone->local_park_fee;
+
+        return $baseFee + ($zone->special_surcharge ?? 0);
     }
 
     #[Computed]

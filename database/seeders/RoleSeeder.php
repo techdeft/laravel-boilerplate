@@ -26,7 +26,7 @@ class RoleSeeder extends Seeder
         $user = User::create([
             'uuid' => (string) Str::uuid(),
             'name' => 'Admin',
-            'email' => 'admin@medmall.ng',
+            'email' => 'admin@Medmall.ng',
             'password' => bcrypt('password'),
             'phone' => '08000000000',
             'status' => 'active',

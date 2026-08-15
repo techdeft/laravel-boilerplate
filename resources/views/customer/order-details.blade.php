@@ -243,7 +243,7 @@ new #[Layout('layouts.guest.app')] class extends Component {
     <div id="printable-receipt" class="hidden print:block p-8 bg-white text-gray-900 max-w-3xl mx-auto font-sans">
         <div class="flex justify-between items-start border-b-2 border-gray-900 pb-6 mb-6">
             <div>
-                <h1 class="text-3xl font-black tracking-tight text-blue-950 uppercase">{{ config('app.name', 'MEDMALL') }}</h1>
+                <h1 class="text-3xl font-black tracking-tight text-blue-950 uppercase">{{ config('app.name', 'Medmall') }}</h1>
                 <p class="text-xs text-gray-500 font-medium">Healthcare & Pharmacy Services</p>
                 <p class="text-xs text-gray-500 mt-1">Official Customer Order Receipt</p>
             </div>

@@ -300,7 +300,7 @@ new #[Layout('layouts.guest.app')] class extends Component {
                                         <i class="fa-solid fa-location-dot text-4xl text-gray-100"></i>
                                     </div>
                                     <h3 class="text-[18px] font-medium text-gray-900 mb-2">No Saved Addresses</h3>
-                                    <p class="text-[14px] text-gray-500 mb-8 max-w-sm">Add a delivery address to ensure a faster checkout experience on MedMall.</p>
+                                    <p class="text-[14px] text-gray-500 mb-8 max-w-sm">Add a delivery address to ensure a faster checkout experience on Medmall.</p>
                                     <button wire:click="toggleForm()" class="px-8 py-3 bg-[#2b1770] text-white rounded font-bold text-[14px] uppercase tracking-wide hover:bg-[#3f238f] transition-all shadow-md">
                                         Add New Address
                                     </button>

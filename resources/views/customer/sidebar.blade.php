@@ -7,7 +7,7 @@
             'text-gray-600 hover:bg-gray-50 border-l-4 border-transparent' => !request()->routeIs('customer.dashboard')
         ])>
             <i class="fa-solid fa-gauge-high size-5 flex items-center justify-center"></i>
-            My MedMall account
+            My Medmall account
         </a>
 
         <a href="{{ route('customer.orders') }}" @class([

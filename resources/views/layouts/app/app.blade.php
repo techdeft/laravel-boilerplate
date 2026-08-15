@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>Admin Dashboard | {{ config('app.name') }}</title>
-    <meta name="description" content="MedMall Administration and Management Panel">
+    <meta name="description" content="Medmall Administration and Management Panel">
 
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">

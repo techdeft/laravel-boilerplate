@@ -112,10 +112,10 @@ new #[Layout('layouts.guest.app')] class extends Component {
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <!-- MedMall Store Credit -->
+                        <!-- Medmall Store Credit -->
                         <div class="border border-gray-100 rounded p-4 flex flex-col h-full">
                             <div class="flex items-center justify-between border-b border-gray-100 pb-2 mb-3">
-                                <h2 class="text-[14px] font-bold text-gray-900 uppercase">MedMall Store Credit</h2>
+                                <h2 class="text-[14px] font-bold text-gray-900 uppercase">Medmall Store Credit</h2>
                             </div>
                             <div class="flex items-center gap-3">
                                 <div

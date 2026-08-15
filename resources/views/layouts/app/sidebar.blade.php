@@ -8,13 +8,7 @@ SIDEBAR — fixed left navigation for the app layout
 
     {{-- ── Logo ──────────────────────────────────────────────── --}}
     <div class="flex items-center gap-3 px-5 py-5 border-b border-gray-200 shrink-0">
-        <div class="flex items-center justify-center size-8 rounded-lg bg-blue-900">
-            <svg class="size-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M19.423 15.621a2 2 0 00.394-3.115l-1.233-1.233a2 2 0 010-2.828l1.233-1.233a2 2 0 00-.394-3.115 2 2 0 00-3.115-.394l-1.233 1.233a2 2 0 01-2.828 0l-1.233-1.233a2 2 0 00-3.115.394 2 2 0 00-.394 3.115l1.233 1.233a2 2 0 010 2.828l-1.233 1.233a2 2 0 00.394 3.115 2 2 0 003.115.394l1.233-1.233a2 2 0 012.828 0l1.233 1.233a2 2 0 003.115-.394zM10 10l-1 1" />
-            </svg>
-        </div>
-        <span class="text-base font-semibold text-foreground tracking-tight">MedMall Admin</span>
+        <img src="{{ asset('images/logo.png') }}" alt="Medmall Logo" class="h-10 w-auto">
     </div>
 
     {{-- ── Scrollable nav ────────────────────────────────────── --}}

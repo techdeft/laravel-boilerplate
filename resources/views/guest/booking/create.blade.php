@@ -203,7 +203,7 @@ new #[Layout('layouts.guest.app')] class extends Component {
     }
 }; ?>
 
-<x-slot name="title">Book Consultation | MedMall</x-slot>
+<x-slot name="title">Book Consultation | Medmall</x-slot>
 
 <div class="min-h-screen py-12 relative bg-cover bg-center bg-fixed" style="background-image: url('{{ asset('images/bg.jpg') }}');">
     <!-- Overlay for readability -->

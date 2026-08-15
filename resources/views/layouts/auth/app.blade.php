@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title> {{ $title ?? config('app.name') }}</title>
-    <meta name="description" content="{{ $description ?? 'MedMall - Secure Access' }}">
+    <meta name="description" content="{{ $description ?? 'Medmall - Secure Access' }}">
 
     <link rel="icon" href="/favicon.ico" sizes="any">
     <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -26,22 +26,28 @@
 
         <div class="hidden md:block bg-primary-500" style="position: relative; overflow: hidden; min-height: 100vh;">
             <!-- Top Right Icon -->
-            <i class="fa-solid fa-prescription-bottle-medical" style="position: absolute; top: -40px; right: -40px; font-size: 240px; color: white; opacity: 0.15; pointer-events: none;"></i>
-            
+            <i class="fa-solid fa-prescription-bottle-medical"
+                style="position: absolute; top: -40px; right: -40px; font-size: 240px; color: white; opacity: 0.15; pointer-events: none;"></i>
+
             <!-- Bottom Left Icon -->
-            <i class="fa-solid fa-stethoscope" style="position: absolute; bottom: -40px; left: -40px; font-size: 240px; color: white; opacity: 0.15; pointer-events: none;"></i>
-            
+            <i class="fa-solid fa-stethoscope"
+                style="position: absolute; bottom: -40px; left: -40px; font-size: 240px; color: white; opacity: 0.15; pointer-events: none;"></i>
+
             <!-- Middle Right Icon -->
-            <i class="fa-solid fa-pills" style="position: absolute; top: 35%; right: -40px; font-size: 180px; color: white; opacity: 0.15; pointer-events: none;"></i>
-            
+            <i class="fa-solid fa-pills"
+                style="position: absolute; top: 35%; right: -40px; font-size: 180px; color: white; opacity: 0.15; pointer-events: none;"></i>
+
             <!-- Middle Left Icon -->
-            <i class="fa-solid fa-heart-pulse" style="position: absolute; bottom: 30%; left: -40px; font-size: 180px; color: white; opacity: 0.15; pointer-events: none;"></i>
-            
+            <i class="fa-solid fa-heart-pulse"
+                style="position: absolute; bottom: 30%; left: -40px; font-size: 180px; color: white; opacity: 0.15; pointer-events: none;"></i>
+
             <!-- Top Center Icon -->
-            <i class="fa-solid fa-capsules" style="position: absolute; top: 60px; left: 30%; font-size: 160px; color: white; opacity: 0.15; pointer-events: none;"></i>
-            
+            <i class="fa-solid fa-capsules"
+                style="position: absolute; top: 60px; left: 30%; font-size: 160px; color: white; opacity: 0.15; pointer-events: none;"></i>
+
             <!-- Bottom Center Icon -->
-            <i class="fa-solid fa-kit-medical" style="position: absolute; bottom: 60px; left: 40%; font-size: 160px; color: white; opacity: 0.15; pointer-events: none;"></i>
+            <i class="fa-solid fa-kit-medical"
+                style="position: absolute; bottom: 60px; left: 40%; font-size: 160px; color: white; opacity: 0.15; pointer-events: none;"></i>
         </div>
 
 
@@ -61,7 +67,7 @@
             <!-- Mobile Top Logo (Visible on mobile screens under 768px only) -->
             <div class="auth-mobile-logo w-full max-w-md text-center mb-6">
                 <a href="{{ route('home') }}" class="inline-flex items-center gap-2 mb-2">
-                    <img src="/images/logo.png" alt="MedMall Logo" class="h-10 w-auto mx-auto"
+                    <img src="/images/logo.png" alt="Medmall Logo" class="h-10 w-auto mx-auto"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
                     <span class="hidden text-2xl font-bold text-slate-900 dark:text-white">
                         <span class="text-primary-500">Med</span>Mall

@@ -1,5 +1,5 @@
 <x-guest-layout>
-    @slot('title', 'Contact Us | MedMall')
+    @slot('title', 'Contact Us | Medmall')
 
     <div class="min-h-screen bg-white font-sans selection:bg-gray-100 selection:text-gray-900 overflow-x-hidden">
 
@@ -39,8 +39,8 @@
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Chat to sales</h3>
                     <p class="text-gray-600 text-sm mb-4">Speak to our friendly team.</p>
-                    <a href="mailto:sales@medmall.ng" class="text-primary-600 font-semibold text-sm hover:underline">
-                        sales@medmall.ng
+                    <a href="mailto:sales@Medmall.ng" class="text-primary-600 font-semibold text-sm hover:underline">
+                        sales@Medmall.ng
                     </a>
                 </div>
 
@@ -53,8 +53,8 @@
                     </div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2">Chat to support</h3>
                     <p class="text-gray-600 text-sm mb-4">We're here to help.</p>
-                    <a href="mailto:support@medmall.ng" class="text-primary-600 font-semibold text-sm hover:underline">
-                        support@medmall.ng
+                    <a href="mailto:support@Medmall.ng" class="text-primary-600 font-semibold text-sm hover:underline">
+                        support@Medmall.ng
                     </a>
                 </div>
 
@@ -217,7 +217,7 @@
                     <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-6">Ready to level up your healthcare?
                     </h2>
                     <p class="text-lg text-gray-300 mb-10 max-w-2xl mx-auto">
-                        Join over 10,000 satisfied patients who trust MedMall for their pharmacy and wellness needs.
+                        Join over 10,000 satisfied patients who trust Medmall for their pharmacy and wellness needs.
                         Start your journey to better health today.
                     </p>
                     <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
